@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ajax请求</title>
+</head>
+
+<body>
+  <button>get</button>
+  <button>post</button>
+  <button>put</button>
+  <button>delete</button>
+  <div id="show"></div>
+  <script>
+    window.onload = function () {
+      const show = document.getElementById('show')
+
+      function handle(data) { // 只要 id 为 1的数据
+        const arr = []
+        for (let i = 0; i < data.length; i++) {
+          console.log(data[i].id)
+          if (data[i].id === 1) {
+            arr.push(data[i])
+          } 
+        }
+        return arr
+      }
+
+      function ajax(methods = 'get', url, data) {
+        // 创建 xhr 对象
+        const xhr = new XMLHttpRequest()
+
+        // 请求方法、请求地址设置
+        xhr.open(methods, url, true)
+
+        if (methods === 'post' || methods === 'put' || methods === 'delete') {
+          // 设置请求 —— 设置 'content-type为 application/json' —— 设置上传数据格式为 json对象
+          xhr.setRequestHeader('content-type', 'application/json')
+          xhr.send(JSON.stringify(data)) // 发送 json 对象
+        } else {
+          xhr.send()
+        }
+
+        // 监听服务器状态
+        xhr.onreadystatechange = () => {
+          // 成功条件的规范
+          if (xhr.readyState === 4) { // 满足成功条件
+            if (xhr.status === 200 || xhr.status === 201 || xhr.status === 304) {
+              show.innerHTML = 'Request: ' + xhr.responseURL + '\n'
+              const rt = JSON.parse(xhr.responseText)
+              if (Array.isArray(rt)) { // 判断返回的数据是 Array
+                const ul = document.createElement('ul')
+                for (const item of rt) {
+                  const li = document.createElement('li')
+                  li.innerHTML = item.title
+                  ul.appendChild(li)
+                }
+                show.appendChild(ul)
+              } else { // 否则直接渲染
+                console.log(rt)
+                for (const item in rt) {
+                  show.innerHTML += rt[item] + '-'
+                }
+              }
+            }
+          }
+        }
+      }
+
+      const BASE_URL = 'https://jsonplaceholder.typicode.com/posts' // 基础请求地址
+
+      const btns = document.getElementsByTagName('button')
+      for (let i = 0; i < btns.length; i++) {
+        btns[i].onclick = function () {
+          show.innerHTML = ''
+          if (this.innerHTML === 'get') { // get 请求
+            ajax('get', BASE_URL)
+          } else if (this.innerHTML === 'post') { // post 请求
+            ajax('post', BASE_URL, { // 上传的数据
+              title: 'wang yilin',
+              body: 'ajax test',
+              userId: 1,
+            })
+          } else if (this.innerHTML === 'put') { // put 请求
+            ajax('put', 'https://jsonplaceholder.typicode.com/posts/1', {
+              id: 1,
+              title: 'foo',
+              body: 'bar',
+              userId: 1,
+            })
+          } else { // delete 请求
+            ajax('delete', BASE_URL + '/1')
+          }
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
