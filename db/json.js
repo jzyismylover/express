@@ -3,7 +3,13 @@
  */
 
 const json = function (res, result, err) {
-  if (typeof result === "undefined") {
+  if(result === 'Unauthorized') {
+    res.json({
+      code: '401',
+      msg: 'Unauthorized'
+    })
+  }
+  else if (typeof result === "undefined") {
     res.json({
       code: "400",
       msg: "操作失败:" + err,

@@ -4,6 +4,22 @@
 
 
 
+```js
+/* 全局数据库连接配置 */
+const connection = mysql.createConnection({
+  host: sqlConfig.host,
+  user: sqlConfig.user,
+  password: sqlConfig.password,
+  database: sqlConfig.database
+})
+
+connection.connect()
+connection.on('error', (error) => console.log(error))
+connection.on('once', () => console.log('Connect to the database'))
+```
+
+
+
 :question: 顺带插入一个 [module.exports & exports](https://zhuanlan.zhihu.com/p/87729137) 的一些理解
 
 

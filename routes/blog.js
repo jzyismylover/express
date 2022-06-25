@@ -1,43 +1,48 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../db/db')
+const parser = require('body-parser')
+const json = require('../db/json')
+
 
 /**
- * @api {get} /blog 获取博客列表
- * @apiDescription 获取博客详情
- * @apiName blog
- * @apiGroup Blog
- */
-router.get('/', (req, res, next) => {
-  db.queryAll('blog', '', res, next)
-})
-
-/**
- * @api {get} /blog 获取指定博客详情
+ * @api {get} /blog 获取博客详情
  * @apiDescription 获取指定博客详情
- * @apiName self blog
+ * @apiName 指定博客
  * @apiGroup Blog
- * @apiParam {string} blog_id 博客ID
- * @apiSuccess {json} result
- * @apiSuccessExample {json} Success-Response: 
- * {
- *    "success": "true",
- *    "result": {
- *         
- *    }
- * }
- * @apiSampleRequest http://localhost:3000/api/blog
+ * @apiHeader Content-Type=application/json
+ * 
+ * @apiQuery {String} [id] 博客ID
+ * 
+ * @apiSuccess {String} userName 用户名
+ * @apiSuccess {String} createTime 创建时间
+ * @apiSuccess {String} updateTime 更新时间
+ * @apiSuccessExample {json} Success-Response:
+ *  HTTP/1.1 200 OK
+ * 
+ * @apiExample {curl} Example usage:
+ * curl -i http://localhost:3000/user/4711
+ * 
+ * @apiSampleRequest /blog
  */
-router.get('/:id', (req, res, next) => {
-  // console.log(req.params)
-  // console.log(req.query)
-  db.queryById('blog', { id: req.params.id }, res, next)
+
+
+// 请求 /api/blog
+router.get('/', (req, res, next) => {
+  const { id } = req.query
+  if(id) db.queryById('blog', { id }, res, next)
+  else db.queryAll('blog', req, res, next)
 })
 
-router.post('/', (req, res) => {})
+// 请求 /api/blog/post {content-type: application/x-www-form-urlencoded}
+router.post('/post', parser.urlencoded({ extended: false }), (req, res) => {
+  console.log(req.body)
+})
 
-router.get('/:id', (req, res) => {})
+// 请求 /api/blog/json-post {content-type: application/json}
+router.post('/json-post', parser.json(), (req, res) => {
+  console.log(req.body)
+})
 
-router.delete('/:id', (req, res) => {})
 
 module.exports = router
