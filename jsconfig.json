@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "baseUrl": ".",
+    "paths": {
+      "@db/*": ["db/*"]
+    }
+  },
+  "include": ["db/*", "routes/*", "token/*"],
+  "exclude": ["node_modules"]
+}

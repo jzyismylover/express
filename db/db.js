@@ -8,6 +8,7 @@ const pool = mysql.createPool(dbconfig)
 const sql = require('./sql/index')
 const json = require('./json')
 
+// 封装 sql 传参
 const paramList = (obj) => {
   let paramArr = [];
   for (let key in obj) {
@@ -18,20 +19,17 @@ const paramList = (obj) => {
   return paramArr;
 }
 
-/* 增加 */
+// 插入(insert命名具有局限性, 不能应对多种insert的场景)
 const queryAdd = (table, req, res, next) => {
   pool.getConnection((err, connection) => {
     let param = paramList(req)
     connection.query(sql[table].insert, [...param], (err, result) => {
-      if (result) {
-        json(res, result, err)
-      }
       connection.release()
     })
   })
 }
 
-/* 根据指定信息获取数据 */
+// 根据 id 查询
 const queryById = (table, req, res, next) => {
   let param = paramList(req)
   pool.getConnection((err, connection) => {
@@ -51,7 +49,7 @@ const queryById = (table, req, res, next) => {
   })
 }
 
-/* 获取某表全部数据 */
+// 查询全部
 const queryAll = (table, req, res, next) => {
   pool.getConnection((err, connection) => {
     connection.query(sql[table].queryAll, (err, result) => {

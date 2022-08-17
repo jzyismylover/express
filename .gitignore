@@ -2,3 +2,4 @@
 node_modules/
 db/dbconfig.js
 jwt-config.js
+.vscode

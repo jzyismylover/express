@@ -27,19 +27,16 @@ const json = require('../db/json')
  */
 
 
-// 请求 /api/blog
 router.get('/', (req, res, next) => {
   const { id } = req.query
   if(id) db.queryById('blog', { id }, res, next)
   else db.queryAll('blog', req, res, next)
 })
 
-// 请求 /api/blog/post {content-type: application/x-www-form-urlencoded}
 router.post('/post', parser.urlencoded({ extended: false }), (req, res) => {
   console.log(req.body)
 })
 
-// 请求 /api/blog/json-post {content-type: application/json}
 router.post('/json-post', parser.json(), (req, res) => {
   console.log(req.body)
 })
