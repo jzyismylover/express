@@ -24,7 +24,7 @@ router.post('/login', (req, res) => {
   // token sign
   const tokenObj = {
     username,
-    role: 'student',
+    role: 'teacher',
   }
   const token = jwt.sign(
     {
@@ -32,7 +32,7 @@ router.post('/login', (req, res) => {
     },
     secret,
     {
-      expiresIn: '2 days',
+      expiresIn: '20 days',
     }
   )
 
